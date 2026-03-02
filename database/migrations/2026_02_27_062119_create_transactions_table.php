@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->enum('type', ['IN', 'OUT', 'TRANS']); // IN: Masuk, OUT: Keluar, TRANS: Transfer
             $table->decimal('amount', 15, 2);
-            $table->string('category'); // "Pemasukan", "Pengeluaran", or "Transfer"
             $table->text('note')->nullable();
             $table->foreignId('from_wallet_id')->nullable()->constrained('wallets')->onDelete('set null');
             $table->foreignId('to_wallet_id')->nullable()->constrained('wallets')->onDelete('set null');
