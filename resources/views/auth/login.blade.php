@@ -1,68 +1,102 @@
-<x-guest-layout>
-    <div class="glass p-8 rounded-3xl shadow-2xl">
-        <div class="text-center mb-10">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
-                    <line x1="2" y1="10" x2="22" y2="10"></line>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-800">Selamat Datang</h1>
-            <p class="text-gray-600 mt-2">Kelola keuanganmu dengan lebih pintar</p>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
-            @csrf
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>{{ config('app.name', 'KeuanganKu') }}</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{{ asset('dashboard-admin/vendors/feather/feather.css') }}">
+  <link rel="stylesheet" href="{{ asset('dashboard-admin/vendors/ti-icons/css/themify-icons.css') }}">
+  <link rel="stylesheet" href="{{ asset('dashboard-admin/vendors/css/vendor.bundle.base.css') }}">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{{ asset('dashboard-admin/css/vertical-layout-light/style.css') }}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{{ asset('dashboard-admin/images/favicon.png') }}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 
-            <!-- Email Address -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                        </svg>
-                    </span>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="nama@email.com"
-                        class="block w-full pl-10 pr-3 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all outline-none">
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="../../images/logo.svg" alt="logo">
+              </div>
+              <h4>Halo! Ayo mulai</h4>
+              <h6 class="font-weight-light">Masuk untuk melanjutkan.</h6>
+              <form class="pt-3" method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="form-group">
+                  <input type="text" name="name" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" required>
                 </div>
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
-
-            <!-- Password -->
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                        </svg>
-                    </span>
-                    <input id="password" type="password" name="password" required placeholder="••••••••"
-                        class="block w-full pl-10 pr-3 py-3 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all outline-none">
+                <div class="form-group">
+    <input type="password" name="password"
+        class="form-control form-control-lg"
+        id="password"
+        placeholder="Password" required>
+    <button class="btn" type="button" id="togglePassword">
+        <i class="bi bi-eye"></i>
+    </button>
+</div>  
+                <div class="mt-3">
+                  <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">MASUK</button>
                 </div>
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <div class="my-2 d-flex justify-content-between align-items-center">
+                  <div class="form-check">
+                    <label class="form-check-label text-muted">
+                      <input type="checkbox" class="form-check-input">
+                      Tetap masuk
+                    </label>
+                  </div>
+                  <a href="#" class="auth-link text-black">Lupa Password?</a>
+                </div>
+
+                <div class="text-center mt-4 font-weight-light">
+                  Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
+                </div>
+              </form>
             </div>
-
-            <div class="flex items-center justify-between text-sm">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-pink-600 shadow-sm focus:ring-pink-500" name="remember">
-                    <span class="ml-2 text-gray-600">Ingat saya</span>
-                </label>
-
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-pink-600 hover:text-pink-700 font-medium">Lupa password?</a>
-                @endif
-            </div>
-
-            <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-xl shadow-lg text-white font-semibold bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transform transition-all active:scale-95">
-                Masuk
-            </button>
-        </form>
-
-        <div class="mt-8 text-center text-sm">
-            <p class="text-gray-600">Belum punya akun? <a href="{{ route('register') }}" class="text-pink-600 hover:text-pink-700 font-bold">Daftar sekarang</a></p>
+          </div>
         </div>
+      </div>
+      <!-- content-wrapper ends -->
     </div>
-</x-guest-layout>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+  <!-- plugins:js -->
+  <script src="{{ asset('dashboard-admin/vendors/js/vendor.bundle.base.js') }}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{{ asset('dashboard-admin/js/off-canvas.js') }}"></script>
+  <script src="{{ asset('dashboard-admin/js/hoverable-collapse.js') }}"></script>
+  <script src="{{ asset('dashboard-admin/js/template.js') }}"></script>
+  <script src="{{ asset('dashboard-admin/js/settings.js') }}"></script>
+  <script src="{{ asset('dashboard-admin/js/todolist.js') }}"></script>
+  <!-- endinject -->
+  <script>
+    const togglePassword = document.querySelector('#togglePassword');
+const password = document.querySelector('#password');
+const icon = togglePassword.querySelector('i');
+
+togglePassword.addEventListener('click', function () {
+    const type = password.type === 'password' ? 'text' : 'password';
+    password.type = type;
+
+    icon.classList.toggle('bi-eye');
+    icon.classList.toggle('bi-eye-slash');
+});
+  </script>
+</body>
+
+</html>

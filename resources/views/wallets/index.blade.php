@@ -127,38 +127,6 @@
         </div>
     </div>
 
-    <!-- Modal Add Wallet -->
-    <div class="modal fade" id="addWalletModal" tabindex="-1" role="dialog" aria-labelledby="addWalletModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addWalletModalLabel">Tambah Dompet Baru</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('wallets.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nama Dompet</label>
-                        <input type="text" name="name" class="form-control" required placeholder="Contoh: BCA, OVO, Tunai">
-                    </div>
-                    <div class="form-group">
-                        <label>Saldo Awal (Rp)</label>
-                        <input type="number" name="balance" class="form-control" value="0" required min="0">
-                        <small class="form-text text-muted">Isi saldo awal jika dompet ini sudah memiliki uang di dalamnya.</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-            </div>
-        </div>
-    </div>
-
     <!-- SweetAlert Script -->
     <script>
         function confirmDelete(id, name) {
