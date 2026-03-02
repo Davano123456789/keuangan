@@ -79,5 +79,66 @@
             </div>
         </div>
         </div>
+    <div class="row">
+        <div class="col-md-8 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Pengeluaran per Kategori (Bulan Ini)</p>
+                    <p class="font-weight-500">Visualisasi pengeluaran kamu berdasarkan kategori untuk membantu mengontrol budget.</p>
+                    <div class="mt-4">
+                        <canvas id="expenseChart" height="250"></canvas>
+                    </div>
+                    @if($expenseByCategory->isEmpty())
+                        <div class="text-center py-5">
+                            <p class="text-muted">Belum ada data pengeluaran bulan ini.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+   
     </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(!$expenseByCategory->isEmpty())
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            const data = {
+                labels: {!! json_encode($expenseByCategory->map(fn($item) => ($item->category->icon ?? '') . ' ' . ($item->category->name ?? 'N/A'))) !!},
+                datasets: [{
+                    data: {!! json_encode($expenseByCategory->pluck('total')) !!},
+                    backgroundColor: [
+                        '#4B49AC', '#FFC100', '#248AFD', '#FF4747', '#57B657', 
+                        '#8D33FF', '#FF33A8', '#33FFF5', '#FF8D33', '#33FF57'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+            @endif
+        });
+    </script>
 </x-master>

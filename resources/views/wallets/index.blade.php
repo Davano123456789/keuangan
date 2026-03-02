@@ -127,6 +127,8 @@
         </div>
     </div>
 
+
+
     <!-- SweetAlert Script -->
     <script>
         function confirmDelete(id, name) {
@@ -146,16 +148,32 @@
             })
         }
 
-        // Show success message if session has 'success'
+        // SweetAlert Handlers
         document.addEventListener('DOMContentLoaded', function() {
             @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                timer: 2000,
-                showConfirmButton: false
-            });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: {!! json_encode(session('success')) !!},
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Waduh!',
+                    text: {!! json_encode(session('error')) !!},
+                });
+            @endif
+
+            @if($errors->any())
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Input Tidak Valid!',
+                    html: `{!! "<ul>" . implode('', array_map(fn($e) => "<li>$e</li>", $errors->all())) . "</ul>" !!}`,
+                });
             @endif
         });
     </script>

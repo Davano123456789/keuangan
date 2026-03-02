@@ -13,15 +13,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $user = User::first();
-        if (!$user) {
-            $user = User::create([
-                'name' => 'Admin',
-                'email' => 'admin@admin.com',
-                'password' => bcrypt('password')
-            ]);
-        }
-        $userId = $user->id;
+        $userId = 1;
 
         $wallets = Wallet::where('user_id', $userId)->get();
         return view('wallets.index', compact('wallets'));
@@ -37,8 +29,7 @@ class WalletController extends Controller
             'balance' => 'required|numeric|min:0',
         ]);
 
-        $user = User::first(); 
-        $userId = $user->id;
+        $userId = 1;
 
         Wallet::create([
             'user_id' => $userId,
@@ -72,8 +63,15 @@ class WalletController extends Controller
      */
     public function destroy(Wallet $wallet)
     {
-        // Simple protection to not delete if it has transactions
-        // Or handle it based on requirements
+        // Check if wallet has transactions
+        $hasTransactions = \App\Models\Transaction::where('from_wallet_id', $wallet->id)
+            ->orWhere('to_wallet_id', $wallet->id)
+            ->exists();
+
+        if ($hasTransactions) {
+            return back()->with('error', 'Tidak bisa menghapus dompet! Silakan hapus semua transaksi di dompet ini terlebih dahulu.');
+        }
+
         $wallet->delete();
 
         return redirect()->route('wallets.index')->with('success', 'Dompet berhasil dihapus!');

@@ -13,8 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $user = User::first(); 
-        $userId = $user ? $user->id : null;
+        $userId = 1;
 
         $categories = Category::where('user_id', $userId)->get();
         return view('categories.index', compact('categories'));
