@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $userId = 1;
+        $userId = auth()->id();
 
         $wallets = Wallet::where('user_id', $userId)->get();
         $totalBalance = $wallets->sum('balance');

@@ -21,6 +21,11 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="{{ asset('dashboard-admin/images/favicon.png') }}" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#4B49AC">
+  <link rel="apple-touch-icon" href="{{ asset('img/pwa/FinanKu.png') }}">
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
 </head>
 <body>
   <div class="container-scroller">
@@ -89,6 +94,17 @@
   <script src="{{ asset('dashboard-admin/js/dashboard.js') }}"></script>
   <script src="{{ asset('dashboard-admin/js/Chart.roundedBarCharts.js') }}"></script>
   <!-- End custom js for this page-->
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker: Registered'))
+          .catch(err => console.log(`Service Worker: Error: ${err}`));
+      });
+    }
+  </script>
 </body>
 
 </html>

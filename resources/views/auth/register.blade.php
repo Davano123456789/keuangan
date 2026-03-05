@@ -19,6 +19,11 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="{{ asset('dashboard-admin/images/favicon.png') }}" />
    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+   
+   <!-- PWA Meta Tags -->
+   <meta name="theme-color" content="#4B49AC">
+   <link rel="apple-touch-icon" href="{{ asset('img/pwa/FinanKu.png') }}">
+   <link rel="manifest" href="{{ asset('manifest.json') }}">
 </head>
 
 <body>
@@ -33,23 +38,34 @@
               </div>
               <h4>Pengguna Baru?</h4>
               <h6 class="font-weight-light">Daftar gampang. Cuman sebentar</h6>
+
+              @if ($errors->any())
+                  <div class="alert alert-danger mt-3 pb-0">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
+
               <form class="pt-3" method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
-                  <input type="text" name="name" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" required>
+                  <input type="text" name="name" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Nama Lengkap" value="{{ old('name') }}" required>
                 </div>
                 <div class="form-group">
-                  <input type="email" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" required>
+                  <input type="email" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" value="{{ old('email') }}" required>
                 </div>
-                 <div class="form-group">
-    <input type="password" name="password"
-        class="form-control form-control-lg"
-        id="password"
-        placeholder="Password" required>
-    <button class="btn" type="button" id="togglePassword">
-        <i class="bi bi-eye"></i>
-    </button>
-</div>  
+                  <div class="form-group">
+                    <input type="password" name="password"
+                        class="form-control form-control-lg"
+                        id="password"
+                        placeholder="Password" required>
+                    <button class="btn" type="button" id="togglePassword" style="position: absolute; right: 10px; top: 10px; background: transparent; border: none;">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                  </div>  
                 <div class="mb-4">
                   <div class="form-check">
                     <label class="form-check-label text-muted">
@@ -98,6 +114,17 @@ togglePassword.addEventListener('click', function () {
     icon.classList.toggle('bi-eye');
     icon.classList.toggle('bi-eye-slash');
 });
+  </script>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker: Registered'))
+          .catch(err => console.log(`Service Worker: Error: ${err}`));
+      });
+    }
   </script>
 </body>
 

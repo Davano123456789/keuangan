@@ -13,7 +13,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $userId = 1;
+        $userId = auth()->id();
 
         $wallets = Wallet::where('user_id', $userId)->get();
         return view('wallets.index', compact('wallets'));
@@ -29,7 +29,7 @@ class WalletController extends Controller
             'balance' => 'required|numeric|min:0',
         ]);
 
-        $userId = 1;
+        $userId = auth()->id();
 
         Wallet::create([
             'user_id' => $userId,
