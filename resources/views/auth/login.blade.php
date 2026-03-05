@@ -32,7 +32,7 @@
         <div class="row w-100 mx-0">
           <div class="col-lg-4 mx-auto">
             <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-              <div class="brand-logo">
+              <div class="brand-logo text-center">
                 <img src="{{ asset('img/FinanKuLogo.png') }}" alt="logo">
               </div>
               <h4>Halo! Ayo mulai</h4>
@@ -53,12 +53,12 @@
                 <div class="form-group">
                   <input type="email" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" value="{{ old('email') }}" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group position-relative">
                   <input type="password" name="password"
                       class="form-control form-control-lg"
                       id="password"
                       placeholder="Password" required>
-                  <button class="btn" type="button" id="togglePassword" style="position: absolute; right: 10px; top: 10px; background: transparent; border: none;">
+                  <button class="btn" type="button" id="togglePassword" style="position: absolute; right: 10px; top: 4px; background: transparent; border: none;">
                       <i class="bi bi-eye"></i>
                   </button>
                 </div>  
