@@ -4,17 +4,20 @@
             <table class="table table-hover text-center">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Tanggal</th>
                         <th>Kategori</th>
                         <th>Keterangan</th>
                         <th>Jumlah</th>
                         <th>Dompet</th>
+                        <th>Input Oleh</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($data as $transaction)
                     <tr>
+                        <td>{{ $loop->iteration + ($data->firstItem() - 1) }}</td>
                         <td>{{ $transaction->date->translatedFormat('d M Y, H:i') }} WIB</td>
                         <td>
                             @if($transaction->type == 'TRANS')
@@ -45,6 +48,9 @@
                             @else
                                 {{ $transaction->fromWallet->name ?? ($transaction->toWallet->name ?? 'N/A') }}
                             @endif
+                        </td>
+                        <td>
+                            <span class="badge badge-info">{{ $transaction->user->name ?? 'System' }}</span>
                         </td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editTransactionModal{{ $transaction->id }}">Edit</button>
@@ -150,6 +156,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        
+        <div class="mt-4 d-flex justify-content-center">
+            {{ $data->links() }}
         </div>
     </div>
 </div>

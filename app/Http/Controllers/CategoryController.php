@@ -13,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $userId = 1;
+        $userId = auth()->id();
 
         $categories = Category::where('user_id', $userId)->get();
         return view('categories.index', compact('categories'));
@@ -29,8 +29,7 @@ class CategoryController extends Controller
             'type' => 'required|in:IN,OUT',
         ]);
 
-        $user = User::first(); 
-        $userId = $user->id;
+        $userId = auth()->id();
 
         Category::create([
             'user_id' => $userId,

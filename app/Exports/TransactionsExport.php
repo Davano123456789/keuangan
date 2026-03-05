@@ -39,7 +39,8 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
             'Nominal',
             'Dari Dompet',
             'Ke Dompet',
-            'Catatan'
+            'Catatan',
+            'Input Oleh'
         ];
     }
 
@@ -57,7 +58,8 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
             $transaction->amount,
             $transaction->fromWallet->name ?? '-',
             $transaction->toWallet->name ?? '-',
-            $transaction->note ?? '-'
+            $transaction->note ?? '-',
+            $transaction->user->name ?? '-'
         ];
     }
 

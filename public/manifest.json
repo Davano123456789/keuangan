@@ -1,0 +1,16 @@
+{
+    "name": "KeuanganKu",
+    "short_name": "KeuanganKu",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4B49AC",
+    "icons": [
+        {
+            "src": "img/pwa/FinanKu.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

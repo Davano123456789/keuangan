@@ -15,23 +15,25 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $userId = 1;
+        $userId = auth()->id();
+        $type = $request->query('type');
 
-        $transactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+        $query = Transaction::with(['category', 'fromWallet', 'toWallet', 'user'])
             ->where('user_id', $userId)
-            ->orderBy('date', 'desc')
-            ->get();
+            ->orderBy('date', 'desc');
 
-        $incomes = $transactions->where('type', 'IN');
-        $expenses = $transactions->where('type', 'OUT');
-        $transfers = $transactions->where('type', 'TRANS');
+        if ($type && in_array($type, ['IN', 'OUT', 'TRANS'])) {
+            $query->where('type', $type);
+        }
+
+        $transactions = $query->paginate(10)->withQueryString();
 
         $wallets = Wallet::where('user_id', $userId)->get();
         $categories = Category::where('user_id', $userId)->get();
 
-        return view('transactions.index', compact('transactions', 'incomes', 'expenses', 'transfers', 'wallets', 'categories'));
+        return view('transactions.index', compact('transactions', 'wallets', 'categories', 'type'));
     }
 
     /**
@@ -49,7 +51,7 @@ class TransactionController extends Controller
             'note' => 'nullable|string|max:500',
         ]);
 
-        $userId = 1;
+        $userId = auth()->id();
 
         DB::beginTransaction();
 
@@ -200,7 +202,7 @@ class TransactionController extends Controller
 
     public function export()
     {
-        $userId = 1; // Hardcoded User ID for now
+        $userId = auth()->id();
         return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TransactionsExport($userId), 'transaksi-keuanganku-' . date('Y-m-d') . '.xlsx');
     }
 }

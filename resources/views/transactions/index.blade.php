@@ -25,50 +25,34 @@
                     <span id="selectedTabLabel">Filter: Semua</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right w-100" aria-labelledby="mobileTabDropdown" style="border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <a class="dropdown-item py-3" data-toggle="tab" href="#all" onclick="updateTabLabel('Semua')">Semua</a>
-                    <a class="dropdown-item py-3" data-toggle="tab" href="#income" onclick="updateTabLabel('Pemasukan')">Pemasukan</a>
-                    <a class="dropdown-item py-3" data-toggle="tab" href="#expense" onclick="updateTabLabel('Pengeluaran')">Pengeluaran</a>
-                    <a class="dropdown-item py-3" data-toggle="tab" href="#transfer" onclick="updateTabLabel('Pindah Saldo')">Pindah Saldo</a>
+                    <a class="dropdown-item py-3 {{ !$type ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index') }}">Semua</a>
+                    <a class="dropdown-item py-3 {{ $type == 'IN' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}">Pemasukan</a>
+                    <a class="dropdown-item py-3 {{ $type == 'OUT' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}">Pengeluaran</a>
+                    <a class="dropdown-item py-3 {{ $type == 'TRANS' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}">Pindah Saldo</a>
                 </div>
             </div>
 
             <!-- Desktop Pills -->
             <ul class="nav nav-pills nav-pills-custom d-none d-md-flex" id="transactionTabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="all-tab" data-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">Semua</a>
+                    <a class="nav-link {{ !$type ? 'active' : '' }}" href="{{ route('transactions.index') }}">Semua</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="income-tab" data-toggle="tab" href="#income" role="tab" aria-controls="income" aria-selected="false">Pemasukan</a>
+                    <a class="nav-link {{ $type == 'IN' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}">Pemasukan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="expense-tab" data-toggle="tab" href="#expense" role="tab" aria-controls="expense" aria-selected="false">Pengeluaran</a>
+                    <a class="nav-link {{ $type == 'OUT' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}">Pengeluaran</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="transfer-tab" data-toggle="tab" href="#transfer" role="tab" aria-controls="transfer" aria-selected="false">Pindah Saldo</a>
+                    <a class="nav-link {{ $type == 'TRANS' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}">Pindah Saldo</a>
                 </li>
             </ul>
         </div>
     </div>
 
     <div class="tab-content" id="transactionTabsContent">
-        <!-- ALL TRANSACTIONS -->
-        <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+        <div class="tab-pane fade show active" role="tabpanel">
             @include('transactions.partials.table', ['data' => $transactions])
-        </div>
-
-        <!-- INCOME -->
-        <div class="tab-pane fade" id="income" role="tabpanel" aria-labelledby="income-tab">
-            @include('transactions.partials.table', ['data' => $incomes])
-        </div>
-
-        <!-- EXPENSE -->
-        <div class="tab-pane fade" id="expense" role="tabpanel" aria-labelledby="expense-tab">
-            @include('transactions.partials.table', ['data' => $expenses])
-        </div>
-
-        <!-- TRANSFER -->
-        <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
-            @include('transactions.partials.table', ['data' => $transfers])
         </div>
     </div>
 
