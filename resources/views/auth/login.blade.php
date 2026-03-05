@@ -114,7 +114,7 @@ togglePassword.addEventListener('click', function () {
 });
   </script>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration (Disabled for Debugging)
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -124,6 +124,7 @@ togglePassword.addEventListener('click', function () {
       });
     }
   </script>
+  -->
 </body>
 
 </html>
