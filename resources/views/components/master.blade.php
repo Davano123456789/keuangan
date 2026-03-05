@@ -95,7 +95,7 @@
   <script src="{{ asset('dashboard-admin/js/Chart.roundedBarCharts.js') }}"></script>
   <!-- End custom js for this page-->
 
-  <!-- PWA Service Worker Registration -->
+  <!-- PWA Service Worker Registration (Disabled for Debugging)
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -105,6 +105,7 @@
       });
     }
   </script>
+  -->
 </body>
 
 </html>
