@@ -169,37 +169,13 @@ class TransactionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Detail the specified resource in storage.
      */
-    public function destroy(Transaction $transaction)
+    public function detail(Transaction $transaction)
     {
-        DB::beginTransaction();
-
-        try {
-            // Reverse balance changes before deleting (with null safety)
-            if ($transaction->type === 'IN') {
-                $wallet = Wallet::find($transaction->to_wallet_id);
-                if ($wallet) $wallet->decrement('balance', $transaction->amount);
-            } elseif ($transaction->type === 'OUT') {
-                $wallet = Wallet::find($transaction->from_wallet_id);
-                if ($wallet) $wallet->increment('balance', $transaction->amount);
-            } elseif ($transaction->type === 'TRANS') {
-                $fromWallet = Wallet::find($transaction->from_wallet_id);
-                $toWallet = Wallet::find($transaction->to_wallet_id);
-                if ($fromWallet) $fromWallet->increment('balance', $transaction->amount);
-                if ($toWallet) $toWallet->decrement('balance', $transaction->amount);
-            }
-
-            $transaction->delete();
-
-            DB::commit();
-            return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil dihapus!');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->with('error', 'Gagal menghapus transaksi: ' . $e->getMessage());
-        }
+        return view('transactions.detail', compact('transaction'));
     }
-
+     
     public function export()
     {
         $userId = auth()->id();
