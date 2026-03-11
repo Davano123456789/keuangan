@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Wallet;
 use Illuminate\Http\Request;
-use App\Models\User;
 
 class WalletController extends Controller
 {
@@ -13,9 +12,7 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $userId = auth()->id();
-
-        $wallets = Wallet::where('user_id', $userId)->get();
+        $wallets = Wallet::all();
         return view('wallets.index', compact('wallets'));
     }
 
@@ -29,10 +26,7 @@ class WalletController extends Controller
             'balance' => 'required|numeric|min:0',
         ]);
 
-        $userId = auth()->id();
-
         Wallet::create([
-            'user_id' => $userId,
             'name' => $request->name,
             'balance' => $request->balance
         ]);

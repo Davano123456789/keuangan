@@ -5,22 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Wallet;
 use App\Models\Transaction;
-use App\Models\User;
 use Carbon\Carbon;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $userId = auth()->id();
-
-        $wallets = Wallet::where('user_id', $userId)->get();
+        $wallets = Wallet::all();
         $totalBalance = $wallets->sum('balance');
         $walletCount = $wallets->count();
 
         // Income this month
-        $incomeThisMonth = Transaction::where('user_id', $userId)
-            ->whereHas('category', function($q) {
+        $incomeThisMonth = Transaction::whereHas('category', function($q) {
                 $q->where('type', 'IN');
             })
             ->whereMonth('date', Carbon::now()->month)
@@ -28,8 +24,7 @@ class HomeController extends Controller
             ->sum('amount');
 
         // Expense this month
-        $expenseThisMonth = Transaction::where('user_id', $userId)
-            ->whereHas('category', function($q) {
+        $expenseThisMonth = Transaction::whereHas('category', function($q) {
                 $q->where('type', 'OUT');
             })
             ->whereMonth('date', Carbon::now()->month)
@@ -38,14 +33,12 @@ class HomeController extends Controller
 
         // Recent transactions
         $recentTransactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
-            ->where('user_id', $userId)
             ->orderBy('date', 'desc')
             ->take(5)
             ->get();
 
         // Expense by category for pie chart
-        $expenseByCategory = Transaction::where('user_id', $userId)
-            ->whereHas('category', function($q) {
+        $expenseByCategory = Transaction::whereHas('category', function($q) {
                 $q->where('type', 'OUT');
             })
             ->whereMonth('date', Carbon::now()->month)

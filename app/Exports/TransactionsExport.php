@@ -12,12 +12,12 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class TransactionsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    protected $userId;
+    // protected $userId;
 
-    public function __construct($userId)
-    {
-        $this->userId = $userId;
-    }
+    // public function __construct($userId)
+    // {
+    //     $this->userId = $userId;
+    // }
 
     /**
     * @return \Illuminate\Support\Collection
@@ -25,7 +25,7 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
     public function collection()
     {
         return Transaction::with(['category', 'fromWallet', 'toWallet'])
-            ->where('user_id', $this->userId)
+            // ->where('user_id', $this->userId)
             ->orderBy('date', 'desc')
             ->get();
     }
@@ -39,8 +39,7 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
             'Nominal',
             'Dari Dompet',
             'Ke Dompet',
-            'Catatan',
-            'Input Oleh'
+            'Catatan'
         ];
     }
 
@@ -58,8 +57,7 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
             $transaction->amount,
             $transaction->fromWallet->name ?? '-',
             $transaction->toWallet->name ?? '-',
-            $transaction->note ?? '-',
-            $transaction->user->name ?? '-'
+            $transaction->note ?? '-'
         ];
     }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -130,4 +130,4 @@ togglePassword.addEventListener('click', function () {
   -->
 </body>
 
-</html>
+</html> --}}
