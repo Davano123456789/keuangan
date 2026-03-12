@@ -85,7 +85,7 @@
 
                         <div class="form-group">
                             <label>Tanggal</label>
-                            <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                            <input type="datetime-local" name="date" class="form-control" value="{{ date('Y-m-d\TH:i') }}" required>
                         </div>
 
                         <!-- Category Row (For IN/OUT only) -->
@@ -124,6 +124,11 @@
                         <div class="form-group">
                             <label>Catatan (Opsional)</label>
                             <textarea name="note" class="form-control" rows="3" placeholder="Contoh: Beli makan siang, Gaji bulan ini..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Input Oleh (Nama)</label>
+                            <input type="text" name="created_by" class="form-control" placeholder="Contoh: Davano, Admin, Sekretaris" value="Admin">
                         </div>
                     </div>
                     <div class="modal-footer">
