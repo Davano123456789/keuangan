@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Models\User;
 
 use App\Models\Category;
 use App\Models\Wallet;
@@ -17,11 +16,9 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = auth()->id();
         $type = $request->query('type');
 
-        $query = Transaction::with(['category', 'fromWallet', 'toWallet', 'user'])
-            ->where('user_id', $userId)
+        $query = Transaction::with(['category', 'fromWallet', 'toWallet'])
             ->orderBy('date', 'desc');
 
         if ($type && in_array($type, ['IN', 'OUT', 'TRANS'])) {
@@ -30,8 +27,8 @@ class TransactionController extends Controller
 
         $transactions = $query->paginate(10)->withQueryString();
 
-        $wallets = Wallet::where('user_id', $userId)->get();
-        $categories = Category::where('user_id', $userId)->get();
+        $wallets = Wallet::all();
+        $categories = Category::all();
 
         return view('transactions.index', compact('transactions', 'wallets', 'categories', 'type'));
     }
@@ -51,7 +48,7 @@ class TransactionController extends Controller
             'note' => 'nullable|string|max:500',
         ]);
 
-        $userId = auth()->id();
+        // $userId = auth()->id();
 
         DB::beginTransaction();
 
@@ -60,7 +57,6 @@ class TransactionController extends Controller
             $date = $request->date . ' ' . date('H:i:s');
 
             $transaction = Transaction::create([
-                'user_id' => $userId,
                 'category_id' => $request->category_id,
                 'type' => $request->type,
                 'amount' => $request->amount,
@@ -178,7 +174,7 @@ class TransactionController extends Controller
      
     public function export()
     {
-        $userId = auth()->id();
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TransactionsExport($userId), 'transaksi-keuanganku-' . date('Y-m-d') . '.xlsx');
+        // $userId = auth()->id();
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TransactionsExport(), 'transaksi-keuanganku-' . date('Y-m-d') . '.xlsx');
     }
 }

@@ -24,11 +24,11 @@
         <span class="menu-title">Kategori</span>
     </a>
     </li>
-    <li class="nav-item border-top mt-3">
+    {{-- <li class="nav-item border-top mt-3">
     <a class="nav-link" href="{{ route('logout') }}">
         <i class="ti-power-off menu-icon text-danger"></i>
         <span class="menu-title text-danger">Logout</span>
     </a>
-    </li>
+    </li> --}}
 </ul>
 </nav>

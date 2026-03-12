@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // user_id removed as authentication/user system is no longer used
             $table->string('name');
             $table->decimal('balance', 15, 2)->default(0);
             $table->timestamps();

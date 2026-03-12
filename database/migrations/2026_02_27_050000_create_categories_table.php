@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // user_id removed since categories are global
             $table->string('name');
             $table->enum('type', ['IN', 'OUT']);
             $table->string('icon')->nullable();

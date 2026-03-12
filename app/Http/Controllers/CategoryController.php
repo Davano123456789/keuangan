@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\User;
 
 class CategoryController extends Controller
 {
@@ -13,9 +12,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $userId = auth()->id();
-
-        $categories = Category::where('user_id', $userId)->get();
+        $categories = Category::all();
         return view('categories.index', compact('categories'));
     }
 
@@ -29,10 +26,7 @@ class CategoryController extends Controller
             'type' => 'required|in:IN,OUT',
         ]);
 
-        $userId = auth()->id();
-
         Category::create([
-            'user_id' => $userId,
             'name' => $request->name,
             'type' => $request->type
         ]);
