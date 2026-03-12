@@ -25,26 +25,29 @@
                     <span id="selectedTabLabel">Filter: Semua</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right w-100" aria-labelledby="mobileTabDropdown" style="border-radius: 15px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <a class="dropdown-item py-3 {{ !$type ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index') }}">Semua</a>
-                    <a class="dropdown-item py-3 {{ $type == 'IN' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}">Pemasukan</a>
-                    <a class="dropdown-item py-3 {{ $type == 'OUT' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}">Pengeluaran</a>
-                    <a class="dropdown-item py-3 {{ $type == 'TRANS' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}">Pindah Saldo</a>
+                    <a class="dropdown-item py-3 transaction-filter {{ !$type ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index') }}" data-type="">Semua</a>
+                    <a class="dropdown-item py-3 transaction-filter {{ $type == 'IN' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}" data-type="IN">Pemasukan</a>
+                    <a class="dropdown-item py-3 transaction-filter {{ $type == 'OUT' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}" data-type="OUT">Pengeluaran</a>
+                    <a class="dropdown-item py-3 transaction-filter {{ $type == 'TRANS' ? 'bg-primary text-white' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}" data-type="TRANS">Pindah Saldo</a>
+
                 </div>
             </div>
 
             <!-- Desktop Pills -->
             <ul class="nav nav-pills nav-pills-custom d-none d-md-flex" id="transactionTabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link {{ !$type ? 'active' : '' }}" href="{{ route('transactions.index') }}">Semua</a>
+                    <a class="nav-link transaction-filter {{ !$type ? 'active' : '' }}" href="{{ route('transactions.index') }}" data-type="">Semua</a>
+
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ $type == 'IN' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}">Pemasukan</a>
+                    <a class="nav-link transaction-filter {{ $type == 'IN' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'IN']) }}" data-type="IN">Pemasukan</a>
+
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ $type == 'OUT' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}">Pengeluaran</a>
+                    <a class="nav-link transaction-filter {{ $type == 'OUT' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'OUT']) }}" data-type="OUT">Pengeluaran</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ $type == 'TRANS' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}">Pindah Saldo</a>
+                     <a class="nav-link transaction-filter {{ $type == 'TRANS' ? 'active' : '' }}" href="{{ route('transactions.index', ['type' => 'TRANS']) }}" data-type="TRANS">Pindah Saldo</a>
                 </li>
             </ul>
         </div>
@@ -164,6 +167,56 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            function loadTransactions(url) {
+                // Show loading indicator
+                $('#transactionTabsContent').html('<div class="card"><div class="card-body text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-3">Memuat transaksi...</p></div></div>');
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        var newContent = $(response).find('#transactionTabsContent').html();
+                        $('#transactionTabsContent').html(newContent);
+
+                        let type = new URL(url).searchParams.get('type') || '';
+
+                        // Update active states for both desktop and mobile
+                        $('.transaction-filter').removeClass('active bg-primary text-white');
+                        $('.nav-link.transaction-filter[data-type="' + type + '"]').addClass('active');
+                        $('.dropdown-item.transaction-filter[data-type="' + type + '"]').addClass('bg-primary text-white');
+
+                        // Update mobile dropdown label
+                        let labelText = $('.transaction-filter[data-type="' + type + '"]').first().text();
+                        $('#selectedTabLabel').text('Filter: ' + labelText);
+                    },
+                    error: function() {
+                        $('#transactionTabsContent').html('<div class="card"><div class="card-body text-center py-5"><p class="text-danger">Gagal memuat data. Silakan muat ulang halaman.</p></div></div>');
+                    }
+                });
+            }
+
+            // Set initial state for browser history to make back/forward work seamlessly
+            history.replaceState({path: window.location.href}, '', window.location.href);
+
+            $(document).on('click', '.transaction-filter', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+
+                // Prevent reloading if the filter is already active
+                if (new URL(url).href === new URL(location.href).href) {
+                    return;
+                }
+
+                loadTransactions(url);
+                history.pushState({path: url}, '', url);
+            });
+
+            window.addEventListener('popstate', function(event) {
+                // When the user uses browser back/forward, load the content for that state
+                if (event.state) {
+                    loadTransactions(event.state.path);
+                }
+            });
             const typeSelect = document.getElementById('typeSelect');
             const categoryGroup = document.getElementById('categoryGroup');
             const fromWalletGroup = document.getElementById('fromWalletGroup');
