@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TransactionController extends Controller
 {
@@ -46,6 +47,7 @@ class TransactionController extends Controller
             'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
             'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
+            'created_by' => 'nullable|string|max:100',
         ]);
 
         // $userId = auth()->id();
@@ -53,8 +55,12 @@ class TransactionController extends Controller
         DB::beginTransaction();
 
         try {
-            // Append current time to the date if it's only a date
-            $date = $request->date . ' ' . date('H:i:s');
+            $date = Carbon::parse($request->date);
+            
+            // If it's just a date (length 10 like YYYY-MM-DD), append current time
+            if (strlen($request->date) <= 10) {
+                $date->setTimeFrom(now());
+            }
 
             $transaction = Transaction::create([
                 'category_id' => $request->category_id,
@@ -64,6 +70,7 @@ class TransactionController extends Controller
                 'from_wallet_id' => $request->from_wallet_id,
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
+                'created_by' => $request->created_by ?? 'Admin',
             ]);
 
             // Update Wallet Balances with check
@@ -105,6 +112,7 @@ class TransactionController extends Controller
             'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
             'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
+            'created_by' => 'nullable|string|max:100',
         ]);
 
         DB::beginTransaction();
@@ -124,8 +132,12 @@ class TransactionController extends Controller
                 if ($toWallet) $toWallet->decrement('balance', $transaction->amount);
             }
 
-            // Append current time to the date if it's only a date
-            $date = $request->date . ' ' . date('H:i:s');
+            $date = Carbon::parse($request->date);
+            
+            // If it's just a date (length 10 like YYYY-MM-DD), append current time
+            if (strlen($request->date) <= 10) {
+                $date->setTimeFrom(now());
+            }
 
             // 2. Update transaction data
             $transaction->update([
@@ -136,6 +148,7 @@ class TransactionController extends Controller
                 'from_wallet_id' => $request->from_wallet_id,
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
+                'created_by' => $request->created_by,
             ]);
 
             // 3. Apply new balance changes with check

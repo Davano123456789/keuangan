@@ -50,7 +50,7 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge badge-info">{{ $transaction->user->name ?? 'System' }}</span>
+                            <span class="badge badge-info">{{ $transaction->created_by ?? 'Admin' }}</span>
                         </td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editTransactionModal{{ $transaction->id }}">Edit</button>
@@ -135,6 +135,11 @@
                                         <div class="form-group">
                                             <label>Catatan (Opsional)</label>
                                             <textarea name="note" class="form-control" rows="3">{{ $transaction->note }}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Input Oleh (Nama)</label>
+                                            <input type="text" name="created_by" class="form-control" value="{{ $transaction->created_by }}">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
