@@ -48,6 +48,17 @@ class HomeController extends Controller
             ->with('category')
             ->get();
 
+        // Income by category for pie chart
+        $incomeByCategory = Transaction::whereHas('category', function($q) {
+                $q->where('type', 'IN');
+            })
+            ->whereMonth('date', Carbon::now()->month)
+            ->whereYear('date', Carbon::now()->year)
+            ->selectRaw('category_id, sum(amount) as total')
+            ->groupBy('category_id')
+            ->with('category')
+            ->get();
+
         return view('home', compact(
             'wallets',
             'totalBalance', 
@@ -55,7 +66,8 @@ class HomeController extends Controller
             'incomeThisMonth', 
             'expenseThisMonth', 
             'recentTransactions',
-            'expenseByCategory'
+            'expenseByCategory',
+            'incomeByCategory'
         ));
     }
 }

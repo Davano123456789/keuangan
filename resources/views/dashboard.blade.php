@@ -103,13 +103,13 @@
                 <i class="ti-settings text-primary"></i>
                 Settings
               </a>
-              {{-- <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('top-logout-form').submit();">
                 <i class="ti-power-off text-primary"></i>
                 Logout
               </a>
-              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+              <form id="top-logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
-              </form> --}}
+              </form>
             </div>
           </li>
           <li class="nav-item nav-settings d-none d-lg-flex">

@@ -80,7 +80,7 @@
         </div>
         </div>
     <div class="row">
-        <div class="col-md-8 grid-margin stretch-card">
+        <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <p class="card-title">Pengeluaran per Kategori (Bulan Ini)</p>
@@ -96,7 +96,22 @@
                 </div>
             </div>
         </div>
-   
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Pemasukan per Kategori (Bulan Ini)</p>
+                    <p class="font-weight-500">Pantau dari mana saja sumber pemasukan utamamu bulan ini.</p>
+                    <div class="mt-4">
+                        <canvas id="incomeChart" height="250"></canvas>
+                    </div>
+                    @if($incomeByCategory->isEmpty())
+                        <div class="text-center py-5">
+                            <p class="text-muted">Belum ada data pemasukan bulan ini.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Chart.js -->
@@ -120,6 +135,43 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+            @endif
+
+            @if(!$incomeByCategory->isEmpty())
+            const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+            const incomeData = {
+                labels: {!! json_encode($incomeByCategory->map(fn($item) => ($item->category->icon ?? '') . ' ' . ($item->category->name ?? 'N/A'))) !!},
+                datasets: [{
+                    data: {!! json_encode($incomeByCategory->pluck('total')) !!},
+                    backgroundColor: [
+                        '#28a745', '#17a2b8', '#20c997', '#007bff', '#6610f2',
+                        '#e83e8c', '#fd7e14', '#ffc107', '#28a745', '#17a2b8'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+
+            new Chart(incomeCtx, {
+                type: 'doughnut',
+                data: incomeData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
