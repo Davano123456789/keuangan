@@ -24,11 +24,20 @@
         <span class="menu-title">Kategori</span>
     </a>
     </li>
-    {{-- <li class="nav-item border-top mt-3">
-    <a class="nav-link" href="{{ route('logout') }}">
+    <li class="nav-item border-top mt-3">
+    <a class="nav-link" href="{{ route('users.index') }}">
+        <i class="icon-head menu-icon"></i>
+        <span class="menu-title">Manajemen Pegawai</span>
+    </a>
+    </li>
+    <li class="nav-item border-top mt-3">
+    <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
         <i class="ti-power-off menu-icon text-danger"></i>
         <span class="menu-title text-danger">Logout</span>
     </a>
-    </li> --}}
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
+    </li>
 </ul>
 </nav>

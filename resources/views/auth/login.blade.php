@@ -1,4 +1,4 @@
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -75,9 +75,7 @@
                   <a href="#" class="auth-link text-black">Lupa Password?</a>
                 </div>
 
-                <div class="text-center mt-4 font-weight-light">
-                  Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a>
-                </div>
+
               </form>
             </div>
           </div>
@@ -127,4 +125,4 @@ togglePassword.addEventListener('click', function () {
   -->
 </body>
 
-</html> --}}
+</html>

@@ -47,7 +47,6 @@ class TransactionController extends Controller
             'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
             'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
-            'created_by' => 'nullable|string|max:100',
         ]);
 
         // $userId = auth()->id();
@@ -70,7 +69,7 @@ class TransactionController extends Controller
                 'from_wallet_id' => $request->from_wallet_id,
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
-                'created_by' => $request->created_by ?? 'Admin',
+                'user_id' => auth()->id(),
             ]);
 
             // Update Wallet Balances with check
@@ -112,7 +111,6 @@ class TransactionController extends Controller
             'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
             'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
-            'created_by' => 'nullable|string|max:100',
         ]);
 
         DB::beginTransaction();
@@ -148,7 +146,7 @@ class TransactionController extends Controller
                 'from_wallet_id' => $request->from_wallet_id,
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
-                'created_by' => $request->created_by,
+                'user_id' => auth()->id(),
             ]);
 
             // 3. Apply new balance changes with check

@@ -1,16 +1,16 @@
 <x-master>
     <div class="row">
         <div class="col-md-12 grid-margin">
-            <div class="row">
-                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
                     <h3 class="font-weight-bold">Riwayat Transaksi</h3>
                     <h6 class="font-weight-normal mb-0">Pantau semua arus kas kamu di sini.</h6>
                 </div>
-                <div class="col-12 col-xl-4 text-right">
-                    <a href="{{ route('transactions.export') }}" class="btn btn-success mr-2 text-white">
+                <div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end">
+                    <a href="{{ route('transactions.export') }}" class="btn btn-success mr-2 text-white text-nowrap">
                         <i class="ti-download"></i> Export Excel
                     </a>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#addTransactionModal">+ Tambah Transaksi</button>
+                    <button class="btn btn-primary text-nowrap" data-toggle="modal" data-target="#addTransactionModal">+ Tambah Transaksi</button>
                 </div>
             </div>
         </div>
@@ -129,10 +129,6 @@
                             <textarea name="note" class="form-control" rows="3" placeholder="Contoh: Beli makan siang, Gaji bulan ini..."></textarea>
                         </div>
 
-                        <div class="form-group">
-                            <label>Input Oleh (Nama)</label>
-                            <input type="text" name="created_by" class="form-control" placeholder="Contoh: Davano, Admin, Sekretaris" value="Admin">
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
