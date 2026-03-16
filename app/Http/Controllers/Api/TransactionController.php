@@ -30,6 +30,14 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function show(Transaction $transaction)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaction->load(['category', 'fromWallet', 'toWallet', 'user'])
+        ]);
+    }
+
     /**
      * Store a newly created transaction in storage.
      */
@@ -49,7 +57,7 @@ class TransactionController extends Controller
 
         try {
             $date = Carbon::parse($request->date);
-            
+
             // If it's just a date, append current time
             if (strlen($request->date) <= 10) {
                 $date->setTimeFrom(now());
@@ -69,13 +77,15 @@ class TransactionController extends Controller
             // Update Wallet Balances
             if ($request->type === 'IN') {
                 Wallet::find($request->to_wallet_id)->increment('balance', $request->amount);
-            } elseif ($request->type === 'OUT') {
+            }
+            elseif ($request->type === 'OUT') {
                 $wallet = Wallet::find($request->from_wallet_id);
                 if ($wallet->balance < $request->amount) {
                     throw new \Exception("Saldo di dompet '{$wallet->name}' tidak mencukupi.");
                 }
                 $wallet->decrement('balance', $request->amount);
-            } elseif ($request->type === 'TRANS') {
+            }
+            elseif ($request->type === 'TRANS') {
                 $fromWallet = Wallet::find($request->from_wallet_id);
                 if ($fromWallet->balance < $request->amount) {
                     throw new \Exception("Saldo di dompet '{$fromWallet->name}' tidak mencukupi untuk transfer.");
@@ -92,7 +102,8 @@ class TransactionController extends Controller
                 'data' => $transaction->load(['category', 'fromWallet', 'toWallet', 'user'])
             ], 201);
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => 'error',
@@ -122,15 +133,21 @@ class TransactionController extends Controller
             // 1. Reverse old balance changes
             if ($transaction->type === 'IN') {
                 $wallet = Wallet::find($transaction->to_wallet_id);
-                if ($wallet) $wallet->decrement('balance', $transaction->amount);
-            } elseif ($transaction->type === 'OUT') {
+                if ($wallet)
+                    $wallet->decrement('balance', $transaction->amount);
+            }
+            elseif ($transaction->type === 'OUT') {
                 $wallet = Wallet::find($transaction->from_wallet_id);
-                if ($wallet) $wallet->increment('balance', $transaction->amount);
-            } elseif ($transaction->type === 'TRANS') {
+                if ($wallet)
+                    $wallet->increment('balance', $transaction->amount);
+            }
+            elseif ($transaction->type === 'TRANS') {
                 $fromWallet = Wallet::find($transaction->from_wallet_id);
                 $toWallet = Wallet::find($transaction->to_wallet_id);
-                if ($fromWallet) $fromWallet->increment('balance', $transaction->amount);
-                if ($toWallet) $toWallet->decrement('balance', $transaction->amount);
+                if ($fromWallet)
+                    $fromWallet->increment('balance', $transaction->amount);
+                if ($toWallet)
+                    $toWallet->decrement('balance', $transaction->amount);
             }
 
             $date = Carbon::parse($request->date);
@@ -153,13 +170,15 @@ class TransactionController extends Controller
             // 3. Apply new balance changes
             if ($request->type === 'IN') {
                 Wallet::find($request->to_wallet_id)->increment('balance', $request->amount);
-            } elseif ($request->type === 'OUT') {
+            }
+            elseif ($request->type === 'OUT') {
                 $wallet = Wallet::find($request->from_wallet_id);
                 if ($wallet->balance < $request->amount) {
                     throw new \Exception("Saldo di dompet '{$wallet->name}' tidak mencukupi.");
                 }
                 $wallet->decrement('balance', $request->amount);
-            } elseif ($request->type === 'TRANS') {
+            }
+            elseif ($request->type === 'TRANS') {
                 $fromWallet = Wallet::find($request->from_wallet_id);
                 if ($fromWallet->balance < $request->amount) {
                     throw new \Exception("Saldo di dompet '{$fromWallet->name}' tidak mencukupi untuk transfer.");
@@ -176,7 +195,8 @@ class TransactionController extends Controller
                 'data' => $transaction->load(['category', 'fromWallet', 'toWallet', 'user'])
             ]);
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => 'error',
@@ -196,15 +216,21 @@ class TransactionController extends Controller
             // Reverse balance changes before deleting
             if ($transaction->type === 'IN') {
                 $wallet = Wallet::find($transaction->to_wallet_id);
-                if ($wallet) $wallet->decrement('balance', $transaction->amount);
-            } elseif ($transaction->type === 'OUT') {
+                if ($wallet)
+                    $wallet->decrement('balance', $transaction->amount);
+            }
+            elseif ($transaction->type === 'OUT') {
                 $wallet = Wallet::find($transaction->from_wallet_id);
-                if ($wallet) $wallet->increment('balance', $transaction->amount);
-            } elseif ($transaction->type === 'TRANS') {
+                if ($wallet)
+                    $wallet->increment('balance', $transaction->amount);
+            }
+            elseif ($transaction->type === 'TRANS') {
                 $fromWallet = Wallet::find($transaction->from_wallet_id);
                 $toWallet = Wallet::find($transaction->to_wallet_id);
-                if ($fromWallet) $fromWallet->increment('balance', $transaction->amount);
-                if ($toWallet) $toWallet->decrement('balance', $transaction->amount);
+                if ($fromWallet)
+                    $fromWallet->increment('balance', $transaction->amount);
+                if ($toWallet)
+                    $toWallet->decrement('balance', $transaction->amount);
             }
 
             $transaction->delete();
@@ -216,7 +242,8 @@ class TransactionController extends Controller
                 'message' => 'Transaksi berhasil dihapus'
             ]);
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => 'error',
