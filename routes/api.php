@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\WalletController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\UserController;
 
 Route::name('api.')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -21,8 +22,7 @@ Route::name('api.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::apiResource('wallets', WalletController::class);
         Route::apiResource('categories', CategoryController::class);
-        
-        Route::get('/transactions', [TransactionController::class, 'index']);
-        Route::post('/transactions', [TransactionController::class, 'store']);
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('transactions', TransactionController::class);
     });
 });
