@@ -67,7 +67,16 @@
                     </button>
                       </input>
                   </div>  
-                <div class="mb-4">
+                  <div class="form-group position-relative">
+                    <input type="password" name="password_confirmation"
+                        class="form-control form-control-lg"
+                        id="password_confirmation"
+                        placeholder="Konfirmasi Password" required>
+                  <button class="btn" type="button" id="togglePasswordConfirmation" style="position: absolute; right: 10px; top: 4px; background: transparent; border: none;">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                      </input>
+                  </div>
                   <div class="form-check">
                     <label class="form-check-label text-muted">
                       <input type="checkbox" class="form-check-input">
@@ -114,6 +123,18 @@ togglePassword.addEventListener('click', function () {
 
     icon.classList.toggle('bi-eye');
     icon.classList.toggle('bi-eye-slash');
+});
+
+const togglePasswordConfirmation = document.querySelector('#togglePasswordConfirmation');
+const passwordConfirmation = document.querySelector('#password_confirmation');
+const iconConfirmation = togglePasswordConfirmation.querySelector('i');
+
+togglePasswordConfirmation.addEventListener('click', function () {
+    const type = passwordConfirmation.type === 'password' ? 'text' : 'password';
+    passwordConfirmation.type = type;
+
+    iconConfirmation.classList.toggle('bi-eye');
+    iconConfirmation.classList.toggle('bi-eye-slash');
 });
   </script>
 

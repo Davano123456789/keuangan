@@ -30,6 +30,7 @@
                                     <th>No</th>
                                     <th>Nama Kategori</th>
                                     <th>Tipe</th>
+                                    <th>Status</th>
                                      <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -48,12 +49,21 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if($category->status == 'active')
+                                            <label class="badge badge-success">Aktif</label>
+                                        @else
+                                            <label class="badge badge-danger">Belum Aktif</label>
+                                        @endif
+                                    </td>
+                                    <td>
+                                                                                @if($category->status == 'inactive')
                                         <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editCategoryModal{{ $category->id }}">Edit</button>
                                         <form id="delete-form-{{ $category->id }}" action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ $category->id }}', '{{ $category->name }}')">Hapus</button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                                 <!-- Edit Modal (Inside Foreach Loop) -->
@@ -103,7 +113,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal Add Wallet -->
+    <!-- Modal Add Categories -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addWalletModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

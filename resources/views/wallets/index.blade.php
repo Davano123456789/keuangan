@@ -32,7 +32,7 @@
                                     <th>No</th>
                                     <th>Nama Dompet</th>
                                     <th>Saldo Aktif</th>
-                                    <th>Aksi</th>
+                                    {{-- <th>Aksi</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,18 +41,18 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td class="font-weight-bold">{{ $wallet->name }}</td>
                                     <td>Rp {{ number_format($wallet->balance, 0, ',', '.') }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editWalletModal{{ $wallet->id }}">Edit</button>
                                         <form id="delete-form-{{ $wallet->id }}" action="{{ route('wallets.destroy', $wallet->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('{{ $wallet->id }}', '{{ $wallet->name }}')">Hapus</button>
                                         </form>
-                                    </td>
+                                    </td> --}}
                                 </tr>
 
                                 <!-- Edit Modal (Inside Foreach Loop) -->
-                                <div class="modal fade" id="editWalletModal{{ $wallet->id }}" tabindex="-1" role="dialog" aria-labelledby="editWalletModalLabel" aria-hidden="true">
+                                {{-- <div class="modal fade" id="editWalletModal{{ $wallet->id }}" tabindex="-1" role="dialog" aria-labelledby="editWalletModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content text-left">
                                         <div class="modal-header">
@@ -81,7 +81,7 @@
                                         </form>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 @empty
                                 <tr>
                                     <td colspan="4" class="text-center text-muted py-4">Kamu belum memiliki dompet. Silakan Tambahkan Dompet Baru.</td>
@@ -129,24 +129,23 @@
 
 
 
-    <!-- SweetAlert Script -->
     <script>
-        function confirmDelete(id, name) {
-            Swal.fire({
-                title: 'Hapus Dompet?',
-                text: "Kamu akan menghapus dompet: " + name + ". Data yang dihapus tidak bisa dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            })
-        }
+        // function confirmDelete(id, name) {
+        //     Swal.fire({
+        //         title: 'Hapus Dompet?',
+        //         text: "Kamu akan menghapus dompet: " + name + ". Data yang dihapus tidak bisa dikembalikan!",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#d33',
+        //         cancelButtonColor: '#3085d6',
+        //         confirmButtonText: 'Ya, Hapus!',
+        //         cancelButtonText: 'Batal'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             document.getElementById('delete-form-' + id).submit();
+        //         }
+        //     })
+        // }
 
         // SweetAlert Handlers
         document.addEventListener('DOMContentLoaded', function() {
