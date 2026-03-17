@@ -71,8 +71,13 @@ class TransactionController extends Controller
                 'date' => $date,
                 'user_id' => auth()->id(),
             ]);
+              if ($request->filled('category_id')) {
+        $category = Category::find($request->category_id);
+        if ($category && $category->status !== 'active') {
+            $category->update(['status' => 'active']);
+        }      
+        }
 
-            // Update Wallet Balances with check
             if ($request->type === 'IN') {
                 Wallet::find($request->to_wallet_id)->increment('balance', $request->amount);
             } elseif ($request->type === 'OUT') {
@@ -104,19 +109,12 @@ class TransactionController extends Controller
     public function update(Request $request, Transaction $transaction)
     {
         $request->validate([
-            'type' => 'required|in:IN,OUT,TRANS',
-            'amount' => 'required|numeric|min:0.01',
-            'date' => 'required|date',
             'category_id' => 'nullable|required_if:type,IN,OUT|exists:categories,id',
-            'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
-            'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
         ]);
-
         DB::beginTransaction();
 
         try {
-            // 1. Reverse old balance changes (with null safety)
             if ($transaction->type === 'IN') {
                 $wallet = Wallet::find($transaction->to_wallet_id);
                 if ($wallet) $wallet->decrement('balance', $transaction->amount);
@@ -132,40 +130,19 @@ class TransactionController extends Controller
 
             $date = Carbon::parse($request->date);
             
-            // If it's just a date (length 10 like YYYY-MM-DD), append current time
+
             if (strlen($request->date) <= 10) {
                 $date->setTimeFrom(now());
             }
 
-            // 2. Update transaction data
+
             $transaction->update([
                 'category_id' => $request->category_id,
-                'type' => $request->type,
-                'amount' => $request->amount,
-                'note' => $request->note,
-                'from_wallet_id' => $request->from_wallet_id,
-                'to_wallet_id' => $request->to_wallet_id,
-                'date' => $date,
                 'user_id' => auth()->id(),
+                'date' => $date,
             ]);
 
-            // 3. Apply new balance changes with check
-            if ($request->type === 'IN') {
-                Wallet::find($request->to_wallet_id)->increment('balance', $request->amount);
-            } elseif ($request->type === 'OUT') {
-                $wallet = Wallet::find($request->from_wallet_id);
-                if ($wallet->balance < $request->amount) {
-                    throw new \Exception("Saldo di dompet '{$wallet->name}' tidak mencukupi.");
-                }
-                $wallet->decrement('balance', $request->amount);
-            } elseif ($request->type === 'TRANS') {
-                $fromWallet = Wallet::find($request->from_wallet_id);
-                if ($fromWallet->balance < $request->amount) {
-                    throw new \Exception("Saldo di dompet '{$fromWallet->name}' tidak mencukupi untuk transfer.");
-                }
-                $fromWallet->decrement('balance', $request->amount);
-                Wallet::find($request->to_wallet_id)->increment('balance', $request->amount);
-            }
+            
 
             DB::commit();
             return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil diperbarui!');

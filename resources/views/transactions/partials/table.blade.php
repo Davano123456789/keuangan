@@ -101,18 +101,18 @@
 
                         <div class="form-group">
                             <label>Nominal (Rp)</label>
-                            <input type="number" name="amount" class="form-control" value="{{ intval($transaction->amount) }}" required min="1">
+                            <input type="number" name="amount" class="form-control" value="{{ intval($transaction->amount) }}" disabled>
                         </div>
 
                         <div class="form-group">
                             <label>Tanggal</label>
-                            <input type="datetime-local" name="date" class="form-control" value="{{ $transaction->date->format('Y-m-d\TH:i') }}" required>
+                            <input type="datetime-local" name="date" class="form-control" value="{{ $transaction->date->format('Y-m-d\TH:i') }}" disabled>
                         </div>
 
                         @if($transaction->type != 'TRANS')
                         <div class="form-group">
                             <label>Kategori</label>
-                            <select name="category_id" class="form-control" required>
+                            <select name="category_id" class="form-control">
                                 @foreach($categories as $cat)
                                     @if($cat->type == $transaction->type)
                                         <option value="{{ $cat->id }}" {{ $transaction->category_id == $cat->id ? 'selected' : '' }}>
@@ -128,9 +128,9 @@
                             @if($transaction->type != 'IN')
                             <div class="col-md-12 form-group">
                                 <label>{{ $transaction->type == 'TRANS' ? 'Dari Dompet (Asal)' : 'Dompet (Sumber)' }}</label>
-                                 <select name="from_wallet_id" class="form-control edit-from-wallet" required>
+                                 <select name="from_wallet_id" class="form-control edit-from-wallet" required disabled>
                                     @foreach($wallets as $wallet)
-                                        <option value="{{ $wallet->id }}" {{ $transaction->from_wallet_id == $wallet->id ? 'selected' : '' }}>{{ $wallet->name }}</option>
+                                        <option value="{{ $wallet->id }}" {{ $transaction->from_wallet_id == $wallet->id ? 'selected' : '' }} disabled>{{ $wallet->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -139,9 +139,9 @@
                             @if($transaction->type != 'OUT')
                             <div class="col-md-12 form-group">
                                 <label>{{ $transaction->type == 'TRANS' ? 'Ke Dompet (Tujuan)' : 'Dompet (Masuk)' }}</label>
-                                 <select name="to_wallet_id" class="form-control edit-to-wallet" required>
+                                 <select name="to_wallet_id" class="form-control edit-to-wallet" required disabled>
                                     @foreach($wallets as $wallet)
-                                        <option value="{{ $wallet->id }}" {{ $transaction->to_wallet_id == $wallet->id ? 'selected' : '' }}>{{ $wallet->name }}</option>
+                                        <option value="{{ $wallet->id }}" {{ $transaction->to_wallet_id == $wallet->id ? 'selected' : '' }} disabled>{{ $wallet->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -150,7 +150,7 @@
 
                         <div class="form-group">
                             <label>Catatan (Opsional)</label>
-                            <textarea name="note" class="form-control" rows="3">{{ $transaction->note }}</textarea>
+                            <textarea name="note" class="form-control" rows="3" disabled>{{ $transaction->note }}</textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
