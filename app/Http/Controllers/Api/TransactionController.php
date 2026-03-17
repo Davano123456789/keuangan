@@ -63,6 +63,11 @@ class TransactionController extends Controller
                 $date->setTimeFrom(now());
             }
 
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('transactions', 'public');
+            }
+
             $transaction = Transaction::create([
                 'category_id' => $request->category_id,
                 'type' => $request->type,
@@ -72,6 +77,7 @@ class TransactionController extends Controller
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
                 'user_id' => auth()->id(),
+                'image' => $imagePath,
             ]);
 
             // Update Wallet Balances
@@ -155,6 +161,15 @@ class TransactionController extends Controller
                 $date->setTimeFrom(now());
             }
 
+            $imagePath = $transaction->image;
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($imagePath) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($imagePath);
+                }
+                $imagePath = $request->file('image')->store('transactions', 'public');
+            }
+
             // 2. Update transaction data
             $transaction->update([
                 'category_id' => $request->category_id,
@@ -165,6 +180,7 @@ class TransactionController extends Controller
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
                 'user_id' => auth()->id(),
+                'image' => $imagePath,
             ]);
 
             // 3. Apply new balance changes
@@ -231,6 +247,11 @@ class TransactionController extends Controller
                     $fromWallet->increment('balance', $transaction->amount);
                 if ($toWallet)
                     $toWallet->decrement('balance', $transaction->amount);
+            }
+
+            // Delete image if exists
+            if ($transaction->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($transaction->image);
             }
 
             $transaction->delete();

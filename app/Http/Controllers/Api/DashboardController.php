@@ -70,7 +70,8 @@ class DashboardController extends Controller
                 'expense_by_category' => $expenseByCategory,
                 'income_by_category' => $incomeByCategory,
                 'recent_transactions' => $recentTransactions,
-                'wallets' => $wallets
+                'wallets' => $wallets,
+                'user' => auth()->user()
             ]
         ]);
     }

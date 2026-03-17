@@ -17,6 +17,14 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function show(Category $category)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $category
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
