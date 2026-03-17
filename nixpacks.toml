@@ -1,6 +1,6 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "nodejs_20"]
-aptPkgs = ["libpng-dev", "libzip-dev", "libjpeg-dev"]
+nixPkgs = ["php82", "php82Extensions.gd", "php82Extensions.zip", "php82Extensions.bcmath", "php82Extensions.intl", "php82Packages.composer", "nodejs_20"]
+aptPkgs = ["libpng-dev", "libzip-dev", "libjpeg-dev", "zlib1g-dev"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader", "npm install"]
