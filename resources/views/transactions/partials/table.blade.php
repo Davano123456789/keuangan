@@ -12,6 +12,7 @@
                         <th>Dompet</th>
                         <th>Input Oleh</th>
                         <th>Aksi</th>
+                        <th>Bukti Transaksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,13 @@
                             <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editTransactionModal{{ $transaction->id }}">Edit</button>
                             <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detailTransactionModal{{ $transaction->id }}">Detail</button>
                         </td>
+                        <td>
+                            @if($transaction->image)
+                                <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank" class="btn btn-sm btn-outline-info">Lihat Bukti</a>
+                            @else
+                                <span class="text-muted">Tidak ada bukti</span>
+                            @endif
+                        </td>
                     </tr>
 
                     @empty
@@ -84,7 +92,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('transactions.update', $transaction->id) }}" method="POST">
+                <form action="{{ route('transactions.update', $transaction->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
@@ -151,6 +159,13 @@
                         <div class="form-group">
                             <label>Catatan (Opsional)</label>
                             <textarea name="note" class="form-control" rows="3" disabled>{{ $transaction->note }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Bukti Transaksi (Opsional)</label>
+                            <input type="file" name="image" class="form-control-file" accept="image/*,application/pdf">
+                            @if($transaction->image)
+                                <small class="form-text text-muted">Bukti saat ini: <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank">Lihat Bukti</a></small>
+                            @endif  
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -234,6 +249,14 @@
                     <div class="form-group">
                         <label>Catatan (Opsional)</label>
                         <textarea class="form-control" rows="3" disabled>{{ $transaction->note }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Bukti Transaksi</label>
+                        @if($transaction->image)
+                            <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank" class="btn btn-outline-info">Lihat Bukti</a>
+                        @else
+                            <span class="text-muted">Tidak ada bukti</span>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer">

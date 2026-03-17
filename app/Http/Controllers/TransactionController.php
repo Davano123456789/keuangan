@@ -47,6 +47,7 @@ class TransactionController extends Controller
             'from_wallet_id' => 'nullable|required_if:type,OUT,TRANS|exists:wallets,id',
             'to_wallet_id' => 'nullable|required_if:type,IN,TRANS|exists:wallets,id',
             'note' => 'nullable|string|max:500',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         // $userId = auth()->id();
@@ -70,6 +71,7 @@ class TransactionController extends Controller
                 'to_wallet_id' => $request->to_wallet_id,
                 'date' => $date,
                 'user_id' => auth()->id(),
+                'image' => $request->file('image') ? $request->file('image')->store('transactions', 'public') : null,
             ]);
               if ($request->filled('category_id')) {
         $category = Category::find($request->category_id);
@@ -111,6 +113,7 @@ class TransactionController extends Controller
         $request->validate([
             'category_id' => 'nullable|required_if:type,IN,OUT|exists:categories,id',
             'note' => 'nullable|string|max:500',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
         DB::beginTransaction();
 
@@ -135,12 +138,21 @@ class TransactionController extends Controller
                 $date->setTimeFrom(now());
             }
 
-
-            $transaction->update([
+            $updateData = [
                 'category_id' => $request->category_id,
                 'user_id' => auth()->id(),
                 'date' => $date,
-            ]);
+            ];
+
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($transaction->image) {
+                    \Storage::disk('public')->delete($transaction->image);
+                }
+                $updateData['image'] = $request->file('image')->store('transactions', 'public');
+            }
+
+            $transaction->update($updateData);
 
             
 

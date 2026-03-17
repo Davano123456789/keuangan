@@ -69,7 +69,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('transactions.store') }}" method="POST">
+                <form action="{{ route('transactions.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -127,6 +127,13 @@
                         <div class="form-group">
                             <label>Catatan (Opsional)</label>
                             <textarea name="note" class="form-control" rows="3" placeholder="Contoh: Beli makan siang, Gaji bulan ini..."></textarea>
+                        </div>
+                                                <div class="form-group">
+                            <label>Bukti Transaksi (Opsional)</label>
+                            <input type="file" name="image" class="form-control-file" accept="image/*,application/pdf">
+                            @if(isset($transaction) && $transaction->image)
+                                <small class="form-text text-muted">Bukti saat ini: <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank">Lihat Bukti</a></small>
+                            @endif
                         </div>
 
                     </div>
