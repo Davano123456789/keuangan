@@ -83,7 +83,8 @@
             "php-http/discovery": true
         },
         "platform": {
-            "ext-gd": "8.2"
+            "ext-gd": "8.2",
+            "ext-zip": "8.2"
         },
         "audit": {
             "ignore": ["PKSA-2cx9-ynrq-qdk3"]
