@@ -55,6 +55,12 @@ class DashboardController extends Controller
             ->with('category')
             ->get();
 
+        // Recent transactions
+        $recentTransactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+            ->orderBy('date', 'desc')
+            ->take(5)
+            ->get();
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -63,7 +69,9 @@ class DashboardController extends Controller
                 'expense_this_month' => $expenseThisMonth,
                 'expense_by_category' => $expenseByCategory,
                 'income_by_category' => $incomeByCategory,
-                'wallets' => $wallets
+                'recent_transactions' => $recentTransactions,
+                'wallets' => $wallets,
+                'user' => auth()->user()
             ]
         ]);
     }

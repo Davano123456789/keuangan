@@ -17,6 +17,14 @@ class WalletController extends Controller
         ]);
     }
 
+    public function show(Wallet $wallet)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $wallet
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
