@@ -28,7 +28,8 @@ class CategoryController extends Controller
 
         Category::create([
             'name' => $request->name,
-            'type' => $request->type
+            'type' => $request->type,
+            'status' => 'inactive' // Default status
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan!');

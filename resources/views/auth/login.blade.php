@@ -74,6 +74,9 @@
                   </div>
                   <a href="#" class="auth-link text-black">Lupa Password?</a>
                 </div>
+                <div class="my-1 d-flex justify-content-center align-items-center">
+                  <p class="font-weight-light">Belum punya akun? <a href="{{ route('register') }}" class="text-primary">Daftar</a></p>
+                </div>
 
 
               </form>

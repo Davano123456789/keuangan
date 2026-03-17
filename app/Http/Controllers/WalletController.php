@@ -37,37 +37,37 @@ class WalletController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Wallet $wallet)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'balance' => 'required|numeric|min:0',
-        ]);
+    // public function update(Request $request, Wallet $wallet)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'balance' => 'required|numeric|min:0',
+    //     ]);
 
-        $wallet->update([
-            'name' => $request->name,
-            'balance' => $request->balance
-        ]);
+    //     $wallet->update([
+    //         'name' => $request->name,
+    //         'balance' => $request->balance
+    //     ]);
 
-        return redirect()->route('wallets.index')->with('success', 'Data dompet berhasil diperbarui!');
-    }
+    //     return redirect()->route('wallets.index')->with('success', 'Data dompet berhasil diperbarui!');
+    // }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wallet $wallet)
-    {
-        // Check if wallet has transactions
-        $hasTransactions = \App\Models\Transaction::where('from_wallet_id', $wallet->id)
-            ->orWhere('to_wallet_id', $wallet->id)
-            ->exists();
+//     public function destroy(Wallet $wallet)
+//     {
+//         // Check if wallet has transactions
+//         $hasTransactions = \App\Models\Transaction::where('from_wallet_id', $wallet->id)
+//             ->orWhere('to_wallet_id', $wallet->id)
+//             ->exists();
 
-        if ($hasTransactions) {
-            return back()->with('error', 'Tidak bisa menghapus dompet! Silakan hapus semua transaksi di dompet ini terlebih dahulu.');
-        }
+//         if ($hasTransactions) {
+//             return back()->with('error', 'Tidak bisa menghapus dompet! Silakan hapus semua transaksi di dompet ini terlebih dahulu.');
+//         }
 
-        $wallet->delete();
+//         $wallet->delete();
 
-        return redirect()->route('wallets.index')->with('success', 'Dompet berhasil dihapus!');
-    }
+//         return redirect()->route('wallets.index')->with('success', 'Dompet berhasil dihapus!');
+//     }
 }

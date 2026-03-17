@@ -11,6 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
         $wallets = Wallet::all();
         $totalBalance = $wallets->sum('balance');
         $walletCount = $wallets->count();
@@ -60,6 +61,7 @@ class HomeController extends Controller
             ->get();
 
         return view('home', compact(
+            'user',
             'wallets',
             'totalBalance', 
             'walletCount', 
