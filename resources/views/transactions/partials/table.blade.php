@@ -67,9 +67,11 @@
             </table>
         </div>
         
-        <div class="mt-4 d-flex justify-content-center">
+        @if($data->hasPages())
+        <div class="mt-4 d-flex justify-content-end">
             {{ $data->links() }}
         </div>
+        @endif
     </div>
 </div>
 

@@ -26,8 +26,81 @@
   <meta name="theme-color" content="#4B49AC">
   <link rel="apple-touch-icon" href="{{ asset('img/pwa/FinanKu.png') }}">
   <link rel="manifest" href="{{ asset('manifest.json') }}">
+
+  <style>
+    /* Override sidebar-icon-only agar berfungsi baik dengan sidebar-fixed */
+    @media (min-width: 992px) {
+      .sidebar-fixed .sidebar {
+        transition: width 0.25s ease;
+      }
+      .sidebar-fixed .main-panel {
+        transition: width 0.25s ease, margin-left 0.25s ease;
+      }
+      /* Ketika icon-only: sidebar menyempit ke 70px */
+      .sidebar-fixed.sidebar-icon-only .sidebar {
+        width: 70px !important;
+      }
+      /* Main panel melebar mengisi sisa ruang */
+      .sidebar-fixed.sidebar-icon-only .main-panel {
+        margin-left: 70px !important;
+        width: calc(100% - 70px) !important;
+      }
+      /* Sembunyikan teks menu, tampilkan hanya icon */
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title,
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item .nav-link .badge {
+        display: none !important;
+      }
+      /* Besarkan icon sedikit saat icon-only */
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-icon {
+        margin-right: 0;
+        font-size: 1.25rem;
+      }
+      /* Pusatkan icon */
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item .nav-link {
+        display: flex;
+        justify-content: center;
+        padding: 1rem 0.5rem;
+      }
+      /* Nonaktifkan hover expand saat sidebar icon-only */
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item.hover-open .nav-link .menu-title {
+        display: none !important;
+      }
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapse,
+      .sidebar-fixed.sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapsing {
+        display: none !important;
+      }
+      .sidebar-fixed.sidebar-icon-only .sidebar:hover {
+        width: 70px !important;
+      }
+      /* Hapus garis vertikal di antara sidebar dan konten */
+      .sidebar-fixed .sidebar {
+        border-right: none !important;
+        box-shadow: none !important;
+      }
+      .navbar .navbar-brand-wrapper {
+        border-right: none !important;
+      }
+      /* Hapus garis dari pagination Laravel */
+      nav[role="navigation"] {
+        border: none !important;
+      }
+      nav[role="navigation"] > div:first-child {
+        display: none !important;
+      }
+      .pagination {
+        border: none !important;
+        margin-bottom: 0 !important;
+      }
+      .pagination .page-item .page-link {
+        border: 1px solid #dee2e6 !important;
+      }
+      .pagination .page-item:first-child .page-link {
+        border-left: 1px solid #dee2e6 !important;
+      }
+    }
+  </style>
 </head>
-<body>
+<body class="sidebar-fixed">
   <div class="container-scroller">
     <x-navbar></x-navbar>
     
@@ -127,6 +200,16 @@
       });
       @endif
     });
+  </script>
+
+
+  <!-- Cegah scroll mengubah nilai input number -->
+  <script>
+    document.addEventListener('wheel', function (e) {
+      if (document.activeElement.type === 'number') {
+        document.activeElement.blur();
+      }
+    }, { passive: true });
   </script>
 </body>
 

@@ -60,6 +60,7 @@
                                         <td>{{ $user->created_at->format('d M Y H:i') }}</td>
                                         <td>
                                             @if(auth()->id() !== $user->id)
+                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary mr-1">Edit</a>
                                                 <form id="delete-form-{{ $user->id }}"
                                                     action="{{ route('users.destroy', $user->id) }}" method="POST"
                                                     class="d-inline">

@@ -4,7 +4,7 @@
     <a class="navbar-brand brand-logo-mini" href="{{ url('/') }}"><img src="{{ asset('img/pwa/FinanKu.png') }}" alt="logo"/></a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+    <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-block" type="button" data-toggle="minimize">
         <span class="icon-menu"></span>
     </button>
     <ul class="navbar-nav mr-lg-2">
