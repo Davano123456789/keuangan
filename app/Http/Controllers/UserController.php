@@ -54,6 +54,44 @@ class UserController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(User $user)
+    {
+        $wallets = Wallet::all();
+        $userWalletIds = $user->wallets->pluck('id')->toArray();
+        return view('users.edit', compact('user', 'wallets', 'userWalletIds'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id],
+            'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['required', 'string', 'in:admin,user'],
+            'wallet_ids' => ['nullable', 'array'],
+            'wallet_ids.*' => ['exists:wallets,id'],
+        ]);
+
+        $user->username = $request->username;
+        $user->role = $request->role;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        // Sync wallet access (empty array if admin or no wallets selected)
+        $user->wallets()->sync($request->wallet_ids ?? []);
+
+        return redirect()->route('users.index')->with('success', 'Data pegawai berhasil diperbarui!');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(User $user)
