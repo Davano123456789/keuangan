@@ -24,12 +24,14 @@
         <span class="menu-title">Kategori</span>
     </a>
     </li>
+    @if(auth()->user()->role === 'admin')
     <li class="nav-item border-top mt-3">
     <a class="nav-link" href="{{ route('users.index') }}">
         <i class="icon-head menu-icon"></i>
         <span class="menu-title">Manajemen Pegawai</span>
     </a>
     </li>
+    @endif
     <li class="nav-item border-top mt-3">
     <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
         <i class="ti-power-off menu-icon text-danger"></i>

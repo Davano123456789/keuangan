@@ -8,4 +8,8 @@ class Wallet extends Model
 {
     protected $guarded = [];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_wallet');
+    }
 }

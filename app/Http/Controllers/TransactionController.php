@@ -22,13 +22,25 @@ class TransactionController extends Controller
         $query = Transaction::with(['category', 'fromWallet', 'toWallet'])
             ->orderBy('date', 'desc');
 
+        if (auth()->user()->role !== 'admin') {
+            $assignedWalletIds = auth()->user()->wallets->pluck('id');
+            $query->where(function($q) use ($assignedWalletIds) {
+                $q->whereIn('from_wallet_id', $assignedWalletIds)
+                  ->orWhereIn('to_wallet_id', $assignedWalletIds);
+            });
+        }
+
         if ($type && in_array($type, ['IN', 'OUT', 'TRANS'])) {
             $query->where('type', $type);
         }
 
         $transactions = $query->paginate(10)->withQueryString();
 
-        $wallets = Wallet::all();
+        if (auth()->user()->role === 'admin') {
+            $wallets = Wallet::all();
+        } else {
+            $wallets = auth()->user()->wallets;
+        }
         $categories = Category::all();
 
         return view('transactions.index', compact('transactions', 'wallets', 'categories', 'type'));

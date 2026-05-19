@@ -24,10 +24,18 @@ class TransactionsExport implements FromCollection, WithHeadings, WithMapping, S
     */
     public function collection()
     {
-        return Transaction::with(['category', 'fromWallet', 'toWallet'])
-            // ->where('user_id', $this->userId)
-            ->orderBy('date', 'desc')
-            ->get();
+        $query = Transaction::with(['category', 'fromWallet', 'toWallet'])
+            ->orderBy('date', 'desc');
+
+        if (auth()->user()->role !== 'admin') {
+            $assignedWalletIds = auth()->user()->wallets->pluck('id');
+            $query->where(function($q) use ($assignedWalletIds) {
+                $q->whereIn('from_wallet_id', $assignedWalletIds)
+                  ->orWhereIn('to_wallet_id', $assignedWalletIds);
+            });
+        }
+
+        return $query->get();
     }
 
     public function headings(): array

@@ -51,7 +51,7 @@
               <form class="pt-3" method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                  <input type="email" name="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" value="{{ old('email') }}" required>
+                  <input type="text" name="username" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username" value="{{ old('username') }}" required>
                 </div>
                 <div class="form-group position-relative">
                   <input type="password" name="password"

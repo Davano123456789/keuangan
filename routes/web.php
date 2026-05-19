@@ -28,5 +28,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::get('transactions/export', [TransactionController::class, 'export'])->name('transactions.export');
     Route::resource('transactions', TransactionController::class);
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->middleware('admin');
 });
