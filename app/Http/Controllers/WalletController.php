@@ -12,7 +12,12 @@ class WalletController extends Controller
      */
     public function index()
     {
-        $wallets = Wallet::all();
+        if (auth()->user()->role === 'admin') {
+            $wallets = Wallet::all();
+        } else {
+            $wallets = auth()->user()->wallets;
+        }
+        
         return view('wallets.index', compact('wallets'));
     }
 

@@ -12,50 +12,76 @@ class HomeController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $wallets = Wallet::all();
+        if ($user->role === 'admin') {
+            $wallets = Wallet::all();
+        } else {
+            $wallets = $user->wallets;
+        }
+        
         $totalBalance = $wallets->sum('balance');
         $walletCount = $wallets->count();
+        $assignedWalletIds = $wallets->pluck('id');
 
         // Income this month
-        $incomeThisMonth = Transaction::whereHas('category', function($q) {
-                $q->where('type', 'IN');
-            })
+        $incomeQuery = Transaction::where('type', 'IN')
             ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
-            ->sum('amount');
+            ->whereYear('date', Carbon::now()->year);
+            
+        if ($user->role !== 'admin') {
+            $incomeQuery->whereIn('to_wallet_id', $assignedWalletIds);
+        }
+        
+        $incomeThisMonth = $incomeQuery->sum('amount');
 
         // Expense this month
-        $expenseThisMonth = Transaction::whereHas('category', function($q) {
-                $q->where('type', 'OUT');
-            })
+        $expenseQuery = Transaction::where('type', 'OUT')
             ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
-            ->sum('amount');
+            ->whereYear('date', Carbon::now()->year);
+            
+        if ($user->role !== 'admin') {
+            $expenseQuery->whereIn('from_wallet_id', $assignedWalletIds);
+        }
+        
+        $expenseThisMonth = $expenseQuery->sum('amount');
 
         // Recent transactions
-        $recentTransactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+        $recentQuery = Transaction::with(['category', 'fromWallet', 'toWallet'])
             ->orderBy('date', 'desc')
-            ->take(5)
-            ->get();
+            ->take(5);
+            
+        if ($user->role !== 'admin') {
+            $recentQuery->where(function($q) use ($assignedWalletIds) {
+                $q->whereIn('from_wallet_id', $assignedWalletIds)
+                  ->orWhereIn('to_wallet_id', $assignedWalletIds);
+            });
+        }
+        
+        $recentTransactions = $recentQuery->get();
 
         // Expense by category for pie chart
-        $expenseByCategory = Transaction::whereHas('category', function($q) {
-                $q->where('type', 'OUT');
-            })
+        $expenseChartQuery = Transaction::where('type', 'OUT')
             ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
-            ->selectRaw('category_id, sum(amount) as total')
+            ->whereYear('date', Carbon::now()->year);
+            
+        if ($user->role !== 'admin') {
+            $expenseChartQuery->whereIn('from_wallet_id', $assignedWalletIds);
+        }
+        
+        $expenseByCategory = $expenseChartQuery->selectRaw('category_id, sum(amount) as total')
             ->groupBy('category_id')
             ->with('category')
             ->get();
 
         // Income by category for pie chart
-        $incomeByCategory = Transaction::whereHas('category', function($q) {
-                $q->where('type', 'IN');
-            })
+        $incomeChartQuery = Transaction::where('type', 'IN')
             ->whereMonth('date', Carbon::now()->month)
-            ->whereYear('date', Carbon::now()->year)
-            ->selectRaw('category_id, sum(amount) as total')
+            ->whereYear('date', Carbon::now()->year);
+            
+        if ($user->role !== 'admin') {
+            $incomeChartQuery->whereIn('to_wallet_id', $assignedWalletIds);
+        }
+        
+        $incomeByCategory = $incomeChartQuery->selectRaw('category_id, sum(amount) as total')
             ->groupBy('category_id')
             ->with('category')
             ->get();

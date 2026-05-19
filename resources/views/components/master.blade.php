@@ -106,6 +106,28 @@
     }
   </script>
   -->
+  <!-- SweetAlert Session Handling -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      @if(session('success'))
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      @endif
+
+      @if(session('error'))
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: '{{ session('error') }}',
+      });
+      @endif
+    });
+  </script>
 </body>
 
 </html>

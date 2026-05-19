@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -13,8 +14,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->get();
+        $users = User::with('wallets')->latest()->get();
         return view('users.index', compact('users'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $wallets = Wallet::all();
+        return view('users.create', compact('wallets'));
     }
 
     /**
@@ -23,16 +33,22 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'string', 'in:admin,user'],
+            'wallet_ids' => ['nullable', 'array'],
+            'wallet_ids.*' => ['exists:wallets,id'],
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        $user = User::create([
+            'username' => $request->username,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
+
+        if ($request->has('wallet_ids')) {
+            $user->wallets()->sync($request->wallet_ids);
+        }
 
         return redirect()->route('users.index')->with('success', 'Akun pegawai berhasil ditambahkan!');
     }
