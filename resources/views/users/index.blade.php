@@ -6,9 +6,11 @@
                     <h3 class="font-weight-bold">Manajemen Pegawai</h3>
                     <h6 class="font-weight-normal mb-0">Kelola akses akun untuk karyawan perusahaan di sini.</h6>
                 </div>
+                @if(auth()->user()->role === 'admin')
                 <div class="col-12 col-md-4 text-md-right">
                     <a href="{{ route('users.create') }}" class="btn btn-primary">+ Tambah Pegawai</a>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -28,7 +30,9 @@
                                     <th>Role</th>
                                     <th>Akses Dompet</th>
                                     <th>Bergabung Sejak</th>
+                                    @if(auth()->user()->role === 'admin')
                                     <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,6 +62,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $user->created_at->format('d M Y H:i') }}</td>
+                                        @if(auth()->user()->role === 'admin')
                                         <td>
                                             @if(auth()->id() !== $user->id)
                                                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary mr-1">Edit</a>
@@ -75,11 +80,11 @@
                                                     Akses</button>
                                             @endif
                                         </td>
+                                        @endif
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="py-5 text-center text-muted">Belum ada akun pegawai
-                                            terdaftar.</td>
+                                        <td colspan="{{ auth()->user()->role === 'admin' ? 6 : 5 }}" class="py-5 text-center text-muted">Belum ada akun pegawai terdaftar.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

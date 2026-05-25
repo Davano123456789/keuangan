@@ -12,13 +12,26 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $wallets = Wallet::all();
-        $totalBalance = $wallets->sum('balance');
+        $user = auth()->user();
+        $isAdmin = $user->role === 'admin';
 
+        if ($isAdmin) {
+            $wallets = Wallet::all();
+            $transactionQuery = Transaction::query();
+        } else {
+            $wallets = $user->wallets;
+            $walletIds = $wallets->pluck('id');
+            $transactionQuery = Transaction::where(function($q) use ($walletIds) {
+                $q->whereIn('from_wallet_id', $walletIds)
+                  ->orWhereIn('to_wallet_id', $walletIds);
+            });
+        }
+
+        $totalBalance = $wallets->sum('balance');
         $now = Carbon::now();
 
         // Income this month
-        $incomeThisMonth = Transaction::whereHas('category', function($q) {
+        $incomeThisMonth = (clone $transactionQuery)->whereHas('category', function($q) {
                 $q->where('type', 'IN');
             })
             ->whereMonth('date', $now->month)
@@ -26,7 +39,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         // Expense this month
-        $expenseThisMonth = Transaction::whereHas('category', function($q) {
+        $expenseThisMonth = (clone $transactionQuery)->whereHas('category', function($q) {
                 $q->where('type', 'OUT');
             })
             ->whereMonth('date', $now->month)
@@ -34,7 +47,7 @@ class DashboardController extends Controller
             ->sum('amount');
 
         // Expense by category
-        $expenseByCategory = Transaction::whereHas('category', function($q) {
+        $expenseByCategory = (clone $transactionQuery)->whereHas('category', function($q) {
                 $q->where('type', 'OUT');
             })
             ->whereMonth('date', $now->month)
@@ -45,7 +58,7 @@ class DashboardController extends Controller
             ->get();
 
         // Income by category
-        $incomeByCategory = Transaction::whereHas('category', function($q) {
+        $incomeByCategory = (clone $transactionQuery)->whereHas('category', function($q) {
                 $q->where('type', 'IN');
             })
             ->whereMonth('date', $now->month)
@@ -56,7 +69,7 @@ class DashboardController extends Controller
             ->get();
 
         // Recent transactions
-        $recentTransactions = Transaction::with(['category', 'fromWallet', 'toWallet'])
+        $recentTransactions = (clone $transactionQuery)->with(['category', 'fromWallet', 'toWallet'])
             ->orderBy('date', 'desc')
             ->take(5)
             ->get();
@@ -71,7 +84,7 @@ class DashboardController extends Controller
                 'income_by_category' => $incomeByCategory,
                 'recent_transactions' => $recentTransactions,
                 'wallets' => $wallets,
-                'user' => auth()->user()
+                'user' => $user
             ]
         ]);
     }

@@ -23,6 +23,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $wallets = Wallet::all();
         return view('users.create', compact('wallets'));
     }
@@ -32,6 +35,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
@@ -58,6 +64,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $wallets = Wallet::all();
         $userWalletIds = $user->wallets->pluck('id')->toArray();
         return view('users.edit', compact('user', 'wallets', 'userWalletIds'));
@@ -68,6 +77,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id],
             'password' => ['nullable', 'string', 'min:8'],
@@ -96,6 +108,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         // Don't allow user to delete themselves
         if (auth()->id() === $user->id) {
             return redirect()->route('users.index')->with('error', 'Anda tidak bisa menghapus akun Anda sendiri!');

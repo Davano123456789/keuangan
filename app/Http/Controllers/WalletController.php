@@ -26,6 +26,10 @@ class WalletController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'balance' => 'required|numeric|min:0',

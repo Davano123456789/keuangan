@@ -6,6 +6,7 @@
             <h3 class="font-weight-bold">Dompet Saya</h3>
             <h6 class="font-weight-normal mb-0">Kelola semua sumber dana kamu di sini. <span class="text-primary">Mulai catat dengan rapi!</span></h6>
             </div>
+            @if(auth()->user()->role === 'admin')
             <div class="col-12 col-xl-4">
              <div class="justify-content-end d-flex">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addWalletModal">
@@ -13,6 +14,7 @@
               </button>
              </div>
             </div>
+            @endif
         </div>
         </div>
     </div>
