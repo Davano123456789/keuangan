@@ -10,7 +10,12 @@ class WalletController extends Controller
 {
     public function index()
     {
-        $wallets = Wallet::all();
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            $wallets = Wallet::all();
+        } else {
+            $wallets = $user->wallets;
+        }
         return response()->json([
             'status' => 'success',
             'data' => $wallets
@@ -27,6 +32,13 @@ class WalletController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya admin yang dapat melakukan aksi ini.'
+            ], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'balance' => 'required|numeric|min:0',
@@ -46,6 +58,13 @@ class WalletController extends Controller
 
     public function update(Request $request, Wallet $wallet)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya admin yang dapat melakukan aksi ini.'
+            ], 403);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'balance' => 'required|numeric|min:0',
@@ -65,6 +84,13 @@ class WalletController extends Controller
 
     public function destroy(Wallet $wallet)
     {
+        if (auth()->user()->role !== 'admin') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya admin yang dapat melakukan aksi ini.'
+            ], 403);
+        }
+
         // Check if wallet has transactions
         $hasTransactions = \App\Models\Transaction::where('from_wallet_id', $wallet->id)
             ->orWhere('to_wallet_id', $wallet->id)

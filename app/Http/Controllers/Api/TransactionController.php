@@ -14,9 +14,18 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type');
+        $user = auth()->user();
 
         $query = Transaction::with(['category', 'fromWallet', 'toWallet', 'user'])
             ->orderBy('date', 'desc');
+
+        if ($user->role !== 'admin') {
+            $assignedWalletIds = $user->wallets->pluck('id');
+            $query->where(function($q) use ($assignedWalletIds) {
+                $q->whereIn('from_wallet_id', $assignedWalletIds)
+                  ->orWhereIn('to_wallet_id', $assignedWalletIds);
+            });
+        }
 
         if ($type && in_array($type, ['IN', 'OUT', 'TRANS'])) {
             $query->where('type', $type);

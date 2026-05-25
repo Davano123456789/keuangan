@@ -13,27 +13,29 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'username' => 'required|string',
             'password' => 'required',
-            'device_name' => 'required',
+            'device_name' => 'nullable|string',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email atau password anda salah.',
+                'message' => 'Username atau password anda salah.',
                 'errors' => [
-                    'email' => ['Kredensial tidak cocok dengan data kami.']
+                    'username' => ['Kredensial tidak cocok dengan data kami.']
                 ]
             ], 422);
         }
 
+        $deviceName = $request->device_name ?? 'mobile';
+
         return response()->json([
             'status' => 'success',
             'message' => 'Login berhasil',
-            'token' => $user->createToken($request->device_name)->plainTextToken,
+            'token' => $user->createToken($deviceName)->plainTextToken,
             'user' => $user
         ]);
     }
