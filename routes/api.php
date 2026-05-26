@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\UserController;
 
 Route::name('api.')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/transactions/image/{filename}', [TransactionController::class, 'showImage']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
