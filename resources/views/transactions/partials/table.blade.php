@@ -53,7 +53,6 @@
                             <span class="badge badge-info">{{ $transaction->user->name ?? 'Sistem' }}</span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#editTransactionModal{{ $transaction->id }}">Edit</button>
                             <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#detailTransactionModal{{ $transaction->id }}">Detail</button>
                         </td>
                     </tr>
@@ -237,6 +236,19 @@
                         <label>Catatan (Opsional)</label>
                         <textarea class="form-control" rows="3" disabled>{{ $transaction->note }}</textarea>
                     </div>
+
+                    @if($transaction->image)
+                    <div class="form-group">
+                        <label>Bukti Foto Transaksi</label>
+                        <div class="mt-2 text-center">
+                            @if(\Illuminate\Support\Facades\Storage::disk('public')->exists($transaction->image))
+                                <img src="{{ asset('storage/' . $transaction->image) }}" class="img-fluid rounded border" alt="Bukti Transaksi" style="max-height: 250px; object-fit: contain;">
+                            @else
+                                <img src="https://finance.dsmgroup.co.id/storage/{{ $transaction->image }}" class="img-fluid rounded border" alt="Bukti Transaksi" style="max-height: 250px; object-fit: contain;">
+                            @endif
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
